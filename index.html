@@ -1,0 +1,236 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>浪漫网页</title>
+<style>
+  html, body {
+    margin: 0;
+    padding: 0;
+    overflow: hidden;
+    font-family: 'Comic Sans MS', 'Arial', sans-serif;
+    background: #fff0f5;
+    height: 100%;
+    width: 100%;
+  }
+
+  /* 自定义弹窗 */
+  #popup {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    padding: 30px 50px;
+    background: #ffe4e1;
+    border-radius: 20px;
+    box-shadow: 0 0 30px rgba(255,182,193,0.6);
+    text-align: center;
+    transition: background 0.5s;
+    z-index: 10;
+  }
+
+  #popup input {
+    padding: 10px;
+    border-radius: 10px;
+    border: 1px solid #ffb6c1;
+    outline: none;
+    width: 150px;
+    margin-right: 10px;
+  }
+
+  #popup button {
+    padding: 10px 20px;
+    border-radius: 10px;
+    border: none;
+    background: #ff69b4;
+    color: white;
+    cursor: pointer;
+    transition: background 0.3s;
+  }
+
+  #popup button:hover {
+    background: #ff1493;
+  }
+
+  /* 爱心碎片 */
+  .heart {
+    position: absolute;
+    width: 20px;
+    height: 20px;
+    background: radial-gradient(circle at 30% 30%, #ffc0cb, #ff69b4);
+    transform: rotate(45deg);
+    animation: explode 1.5s forwards;
+  }
+  .heart::before,
+  .heart::after {
+    content: "";
+    position: absolute;
+    width: 20px;
+    height: 20px;
+    background: radial-gradient(circle at 30% 30%, #ffc0cb, #ff69b4);
+    border-radius: 50%;
+  }
+  .heart::before {
+    top: -10px;
+    left: 0;
+  }
+  .heart::after {
+    left: -10px;
+    top: 0;
+  }
+
+  @keyframes explode {
+    0% { transform: translate(0,0) rotate(45deg); opacity:1; }
+    100% { transform: translate(var(--x), var(--y)) rotate(45deg); opacity:0; }
+  }
+
+  /* 爱心雨 */
+  .falling-heart {
+    position: absolute;
+    width: 20px;
+    height: 20px;
+    background: radial-gradient(circle at 30% 30%, #ffc0cb, #ffb6c1);
+    transform: rotate(45deg);
+    top: -30px;
+    animation: fall linear forwards;
+  }
+  .falling-heart::before,
+  .falling-heart::after {
+    content: "";
+    position: absolute;
+    width: 20px;
+    height: 20px;
+    background: radial-gradient(circle at 30% 30%, #ffc0cb, #ffb6c1);
+    border-radius: 50%;
+  }
+  .falling-heart::before { top: -10px; left: 0; }
+  .falling-heart::after { left: -10px; top: 0; }
+
+  @keyframes fall {
+    0% { top: -30px; opacity: 1; }
+    100% { top: 100vh; opacity: 0; }
+  }
+
+  /* 浮现文字 */
+  #loveText {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%) scale(0);
+    font-size: 50px;
+    color: #ff69b4;
+    text-shadow: 0 0 10px #ffb6c1;
+    transition: transform 1s ease, opacity 1s ease;
+    opacity: 0;
+  }
+
+  /* 错误效果 */
+  body.error {
+    background: black;
+    animation: flicker 0.2s infinite;
+  }
+  @keyframes flicker {
+    0%, 100% { background: black; }
+    50% { background: #111; }
+  }
+
+  .question {
+    position: absolute;
+    color: red;
+    font-weight: bold;
+    user-select: none;
+    pointer-events: none;
+  }
+</style>
+</head>
+<body>
+<div id="popup">
+  <p>你的男朋友叫什么名字？</p>
+  <input type="text" id="nameInput" placeholder="请输入名字">
+  <button id="submitBtn">确定</button>
+</div>
+<div id="loveText">邴爽爽我爱你</div>
+
+<script>
+const popup = document.getElementById('popup');
+const input = document.getElementById('nameInput');
+const button = document.getElementById('submitBtn');
+const loveText = document.getElementById('loveText');
+
+button.addEventListener('click', checkName);
+input.addEventListener('keypress', (e) => { if(e.key === 'Enter') checkName(); });
+
+function checkName() {
+  if(input.value === '陈森') {
+    startRomanticFlow();
+  } else {
+    startScaryFlow();
+  }
+}
+
+function startRomanticFlow() {
+  let colors = ['#ffe4e1','#ffb6c1','#ff69b4','#ffc0cb']; // 最后粉色
+  let index = 0;
+  const interval = setInterval(() => {
+    popup.style.background = colors[index];
+    index++;
+    if(index === colors.length) {
+      clearInterval(interval);
+      explodeHearts();
+    }
+  }, 500);
+}
+
+function explodeHearts() {
+  popup.style.transition = 'none';
+  popup.innerHTML = '';
+  popup.style.width = '50px';
+  popup.style.height = '50px';
+  for(let i=0; i<100; i++) {
+    const heart = document.createElement('div');
+    heart.className = 'heart';
+    heart.style.left = '50%';
+    heart.style.top = '50%';
+    heart.style.setProperty('--x', (Math.random()*600-300)+'px');
+    heart.style.setProperty('--y', (Math.random()*400-200)+'px');
+    document.body.appendChild(heart);
+  }
+  setTimeout(() => {
+    popup.style.display = 'none';
+    startFallingHearts();
+  }, 1500);
+}
+
+function startFallingHearts() {
+  for(let i=0;i<100;i++){
+    const fh = document.createElement('div');
+    fh.className='falling-heart';
+    fh.style.left = Math.random()*window.innerWidth+'px';
+    fh.style.animationDuration = (2 + Math.random()*1)+'s';
+    document.body.appendChild(fh);
+  }
+  setTimeout(showLoveText, 2000);
+}
+
+function showLoveText() {
+  loveText.style.transform = 'translate(-50%, -50%) scale(1)';
+  loveText.style.opacity = 1;
+}
+
+function startScaryFlow() {
+  document.body.classList.add('error');
+  popup.style.display = 'none';
+  setInterval(() => {
+    const q = document.createElement('div');
+    q.className='question';
+    q.style.left = Math.random()*window.innerWidth+'px';
+    q.style.top = Math.random()*window.innerHeight+'px';
+    q.style.fontSize = (10 + Math.random()*40)+'px';
+    q.innerText = '?';
+    document.body.appendChild(q);
+  }, 50);
+}
+</script>
+</body>
+</html>
