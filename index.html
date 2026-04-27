@@ -15,7 +15,6 @@
     width: 100%;
   }
 
-  /* 自定义弹窗 */
   #popup {
     position: absolute;
     top: 50%;
@@ -53,7 +52,6 @@
     background: #ff1493;
   }
 
-  /* 爱心碎片 */
   .heart {
     position: absolute;
     width: 20px;
@@ -71,21 +69,13 @@
     background: radial-gradient(circle at 30% 30%, #ffc0cb, #ff69b4);
     border-radius: 50%;
   }
-  .heart::before {
-    top: -10px;
-    left: 0;
-  }
-  .heart::after {
-    left: -10px;
-    top: 0;
-  }
-
+  .heart::before { top: -10px; left: 0; }
+  .heart::after { left: -10px; top: 0; }
   @keyframes explode {
     0% { transform: translate(0,0) rotate(45deg); opacity:1; }
     100% { transform: translate(var(--x), var(--y)) rotate(45deg); opacity:0; }
   }
 
-  /* 爱心雨 */
   .falling-heart {
     position: absolute;
     width: 20px;
@@ -106,13 +96,11 @@
   }
   .falling-heart::before { top: -10px; left: 0; }
   .falling-heart::after { left: -10px; top: 0; }
-
   @keyframes fall {
     0% { top: -30px; opacity: 1; }
     100% { top: 100vh; opacity: 0; }
   }
 
-  /* 浮现文字 */
   #loveText {
     position: absolute;
     top: 50%;
@@ -123,9 +111,24 @@
     text-shadow: 0 0 10px #ffb6c1;
     transition: transform 1s ease, opacity 1s ease;
     opacity: 0;
+    z-index: 5;
   }
 
-  /* 错误效果 */
+  .petal {
+    position: absolute;
+    width: 15px;
+    height: 15px;
+    background: radial-gradient(circle at 30% 30%, #ffc0cb, #ffb6c1);
+    border-radius: 50%;
+    opacity: 0;
+    animation: petalFade linear forwards;
+  }
+  @keyframes petalFade {
+    0% { opacity: 0; transform: translate(0,0) rotate(0deg); }
+    50% { opacity: 1; }
+    100% { opacity: 0; }
+  }
+
   body.error {
     background: black;
     animation: flicker 0.2s infinite;
@@ -134,7 +137,6 @@
     0%, 100% { background: black; }
     50% { background: #111; }
   }
-
   .question {
     position: absolute;
     color: red;
@@ -162,19 +164,15 @@ button.addEventListener('click', checkName);
 input.addEventListener('keypress', (e) => { if(e.key === 'Enter') checkName(); });
 
 function checkName() {
-  if(input.value === '陈森') {
-    startRomanticFlow();
-  } else {
-    startScaryFlow();
-  }
+  if(input.value === '陈森') startRomanticFlow();
+  else startScaryFlow();
 }
 
 function startRomanticFlow() {
-  let colors = ['#ffe4e1','#ffb6c1','#ff69b4','#ffc0cb']; // 最后粉色
+  let colors = ['#ffe4e1','#ffb6c1','#ff69b4','#ffc0cb']; 
   let index = 0;
   const interval = setInterval(() => {
-    popup.style.background = colors[index];
-    index++;
+    popup.style.background = colors[index++];
     if(index === colors.length) {
       clearInterval(interval);
       explodeHearts();
@@ -184,52 +182,71 @@ function startRomanticFlow() {
 
 function explodeHearts() {
   popup.style.transition = 'none';
-  popup.innerHTML = '';
-  popup.style.width = '50px';
-  popup.style.height = '50px';
-  for(let i=0; i<100; i++) {
+  popup.style.display = 'none';
+  for(let i=0;i<150;i++){
     const heart = document.createElement('div');
-    heart.className = 'heart';
-    heart.style.left = '50%';
-    heart.style.top = '50%';
-    heart.style.setProperty('--x', (Math.random()*600-300)+'px');
-    heart.style.setProperty('--y', (Math.random()*400-200)+'px');
+    heart.className='heart';
+    heart.style.left='50%';
+    heart.style.top='50%';
+    heart.style.setProperty('--x',(Math.random()*600-300)+'px');
+    heart.style.setProperty('--y',(Math.random()*400-200)+'px');
     document.body.appendChild(heart);
   }
-  setTimeout(() => {
-    popup.style.display = 'none';
-    startFallingHearts();
-  }, 1500);
+  startFallingHearts();
 }
 
 function startFallingHearts() {
-  for(let i=0;i<100;i++){
-    const fh = document.createElement('div');
+  for(let i=0;i<200;i++){
+    const fh=document.createElement('div');
     fh.className='falling-heart';
-    fh.style.left = Math.random()*window.innerWidth+'px';
-    fh.style.animationDuration = (2 + Math.random()*1)+'s';
+    fh.style.left=Math.random()*window.innerWidth+'px';
+    fh.style.animationDuration=(3+Math.random()*2)+'s';
+    fh.style.animationDelay=(Math.random()*3)+'s';
     document.body.appendChild(fh);
   }
-  setTimeout(showLoveText, 2000);
+  setTimeout(showLoveText,2000);
 }
 
 function showLoveText() {
-  loveText.style.transform = 'translate(-50%, -50%) scale(1)';
-  loveText.style.opacity = 1;
+  loveText.style.transform='translate(-50%,-50%) scale(1)';
+  loveText.style.opacity=1;
+  spawnPetals();
+}
+
+function spawnPetals() {
+  setInterval(()=>{
+    const petal=document.createElement('div');
+    petal.className='petal';
+    petal.style.left=Math.random()*window.innerWidth+'px';
+    petal.style.top=Math.random()*window.innerHeight+'px';
+    petal.style.width=(10+Math.random()*20)+'px';
+    petal.style.height=(10+Math.random()*20)+'px';
+    const duration=3+Math.random()*3;
+    petal.style.animationDuration=duration+'s';
+    document.body.appendChild(petal);
+    // 随机漂动
+    const deltaX=(Math.random()*100-50);
+    const deltaY=(Math.random()*100-50);
+    petal.animate([
+      { transform: 'translate(0,0) rotate(0deg)' },
+      { transform: `translate(${deltaX}px, ${deltaY}px) rotate(${Math.random()*360}deg)` }
+    ], {duration: duration*1000, iterations:1, easing:'ease-in-out'});
+    setTimeout(()=>petal.remove(), duration*1000);
+  }, 200);
 }
 
 function startScaryFlow() {
   document.body.classList.add('error');
-  popup.style.display = 'none';
-  setInterval(() => {
-    const q = document.createElement('div');
+  popup.style.display='none';
+  setInterval(()=>{
+    const q=document.createElement('div');
     q.className='question';
-    q.style.left = Math.random()*window.innerWidth+'px';
-    q.style.top = Math.random()*window.innerHeight+'px';
-    q.style.fontSize = (10 + Math.random()*40)+'px';
-    q.innerText = '?';
+    q.style.left=Math.random()*window.innerWidth+'px';
+    q.style.top=Math.random()*window.innerHeight+'px';
+    q.style.fontSize=(10+Math.random()*40)+'px';
+    q.innerText='?';
     document.body.appendChild(q);
-  }, 50);
+  },50);
 }
 </script>
 </body>
