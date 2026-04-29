@@ -148,11 +148,11 @@
 </head>
 <body>
 <div id="popup">
-  <p>和平精英和王者荣耀你喜欢哪一个</p>
+  <p>你喜欢的人叫什么名字？</p>
   <input type="text" id="nameInput" placeholder="请输入名字">
   <button id="submitBtn">确定</button>
 </div>
-<div id="loveText">和平精英牛逼666</div>
+<div id="loveText">邴爽爽我爱你❤️‍🔥❤️‍🔥❤️‍🔥</div>
 
 <script>
 const popup = document.getElementById('popup');
@@ -164,7 +164,7 @@ button.addEventListener('click', checkName);
 input.addEventListener('keypress', (e) => { if(e.key === 'Enter') checkName(); });
 
 function checkName() {
-  if(input.value === '和平精英') startRomanticFlow();
+  if(input.value === '陈森') startRomanticFlow();
   else startScaryFlow();
 }
 
